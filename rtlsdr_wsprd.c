@@ -412,12 +412,13 @@ void usage(void) {
             "\t-c your callsign (12 chars max)\n"
             "\t-l your locator grid (6 chars max)\n"
             "Receiver extra options:\n"
+            "\t-d device index (default: 0)\n"
             "\t-g gain [0-49] (default: 29)\n"
             "\t-a auto gain (default: off)\n"
             "\t-o frequency offset (default: 0)\n"
             "\t-p crystal correction factor (ppm) (default: 0)\n"
             "\t-u upconverter (default: 0, example: 125M)\n"
-            "\t-d direct dampling [0,1,2] (default: 0, 1 for I input, 2 for Q input)\n"
+            "\t-D direct dampling [0,1,2] (default: 0, 1 for I input, 2 for Q input)\n"
             "Decoder extra options:\n"
             "\t-H do not use (or update) the hash table\n"
             "\t-Q quick mode, doesn't dig deep for weak signals\n"
@@ -450,7 +451,7 @@ int main(int argc, char** argv) {
     if (argc <= 1)
         usage();
 
-    while ((opt = getopt(argc, argv, "f:c:l:g:a:o:p:u:d:H:Q:S")) != -1) {
+    while ((opt = getopt(argc, argv, "f:c:l:d:g:a:o:p:u:D:H:Q:S")) != -1) {
         switch (opt) {
         case 'f': // Frequency
             rx_options.dialfreq = (uint32_t)atofs(optarg);
@@ -460,6 +461,9 @@ int main(int argc, char** argv) {
             break;
         case 'l': // Locator / Grid
             sprintf(dec_options.rloc, "%.6s", optarg);
+            break;
+        case 'd': // device index
+            rtl_index = (uint32_t)atofs(optarg);
             break;
         case 'g': // Small signal amplifier gain
             rx_options.gain = atoi(optarg);
@@ -481,7 +485,7 @@ int main(int argc, char** argv) {
         case 'u': // Upconverter frequency
             rx_options.upconverter = (uint32_t)atofs(optarg);
             break;
-        case 'd': // Direct Sampling
+        case 'D': // Direct Sampling
             rx_options.directsampling = (uint32_t)atofs(optarg);
             break;
         case 'H': // Decoder option, use a hastable
